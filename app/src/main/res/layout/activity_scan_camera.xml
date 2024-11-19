@@ -7,8 +7,8 @@
     android:layout_height="match_parent"
     tools:context=".ScanCameraActivity">
 
-    <TextureView
-        android:id="@+id/textureView"
+    <androidx.camera.view.PreviewView
+        android:id="@+id/cameraPreview"
         android:layout_width="match_parent"
         android:layout_height="match_parent" />
 

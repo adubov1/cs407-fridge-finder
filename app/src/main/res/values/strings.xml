@@ -7,6 +7,10 @@
     <string name="menu">Menu</string>
     <string name="search_saved_recipes">Search Saved Recipes</string>
     <string name="scan_your_fridge">Scan your Fridge</string>
-    <string name="num_photos_left">0/10</string>
+    <string name="num_photos_left">%1$d/%2$d left</string>
     <string name="done_scanning">Done Scanning</string>
+    <string name="analyze_photos">Analyze Photos</string>
+    <string name="review_photos">Review Photos</string>
+    <string name="take_more_photos">Take More Photos</string>
+    <string name="remove_image">Remove image</string>
 </resources>
