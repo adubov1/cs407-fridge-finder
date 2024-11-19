@@ -7,4 +7,6 @@
     <string name="menu">Menu</string>
     <string name="search_saved_recipes">Search Saved Recipes</string>
     <string name="scan_your_fridge">Scan your Fridge</string>
+    <string name="num_photos_left">0/10</string>
+    <string name="done_scanning">Done Scanning</string>
 </resources>
