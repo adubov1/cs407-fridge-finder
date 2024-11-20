@@ -9,10 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.ImageView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+
 
 class PhotoReviewActivity : AppCompatActivity() {
     private lateinit var adapter: PhotoReviewAdapter
@@ -34,8 +36,15 @@ class PhotoReviewActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         findViewById<Button>(R.id.finalizeButton).setOnClickListener {
-            setResult(Activity.RESULT_OK)
-            finish()
+            println("test")
+            if (photos.isNotEmpty()) {
+                println("Starting IdentifyIngredientsActivity with photos: $photos")
+                val intent = Intent(this, IdentifyIngredientsActivity::class.java)
+                intent.putStringArrayListExtra("photoPaths", ArrayList(photos))
+                startActivity(intent)
+            } else {
+                Toast.makeText(this, "No photos to process", Toast.LENGTH_SHORT).show()
+            }
         }
 
         findViewById<Button>(R.id.takeMoreButton).setOnClickListener {

@@ -41,6 +41,9 @@
         <activity
             android:name=".RecipeListActivity"
             android:exported="false" />
+        <activity
+            android:name=".IdentifyIngredientsActivity"
+            android:exported="false" />
     </application>
 
 </manifest>
