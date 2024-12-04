@@ -5,9 +5,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.ProgressBar
-import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -22,6 +23,9 @@ import org.json.JSONObject
 class IdentifyIngredientsActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
+    private lateinit var addIngredientEdit: EditText
+    private lateinit var addIngredientButton: Button
+    private lateinit var findRecipesButton: Button
     private val ingredients = mutableListOf<String>()
     private lateinit var adapter: IngredientsAdapter
 
@@ -29,24 +33,51 @@ class IdentifyIngredientsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ingredients)
 
-        val backButton = findViewById<ImageButton>(R.id.backButton)
         recyclerView = findViewById(R.id.ingredientsList)
         progressBar = findViewById(R.id.progressBar)
-        backButton.setOnClickListener {
+        addIngredientEdit = findViewById(R.id.addIngredientEdit)
+        addIngredientButton = findViewById(R.id.addIngredientButton)
+        findRecipesButton = findViewById(R.id.findRecipesButton)
+
+        findViewById<ImageButton>(R.id.backButton).setOnClickListener {
             navigateToCamera()
         }
+
         recyclerView.layoutManager = LinearLayoutManager(this)
-        adapter = IngredientsAdapter(ingredients)
+        adapter = IngredientsAdapter(
+            ingredients,
+            onDelete = { position -> removeIngredient(position) },
+            onEdit = { position, newText -> updateIngredient(position, newText) }
+        )
         recyclerView.adapter = adapter
 
-        val photoPaths = intent.getStringArrayListExtra("photoPaths") ?: emptyList()
-        analyzeImages(photoPaths)
-    }
+        if (intent.getBooleanExtra("fromRecipeList", false)) {
+            val existingIngredients = intent.getStringArrayListExtra("ingredients")
+            if (!existingIngredients.isNullOrEmpty()) {
+                updateIngredients(existingIngredients)
+            }
+        } else {
+            val photoPaths = intent.getStringArrayListExtra("photoPaths") ?: emptyList()
+            if (photoPaths.isNotEmpty()) {
+                analyzeImages(photoPaths)
+            }
+        }
 
-    private fun navigateToCamera() {
-        val intent = Intent(this, ScanCameraActivity::class.java)
-        startActivity(intent)
-        finish()
+        addIngredientButton.setOnClickListener {
+            val newIngredient = addIngredientEdit.text.toString().trim()
+            if (newIngredient.isNotEmpty()) {
+                addIngredient(newIngredient)
+                addIngredientEdit.text.clear()
+            }
+        }
+
+        findRecipesButton.setOnClickListener {
+            if (ingredients.isNotEmpty()) {
+                navigateToRecipes()
+            } else {
+                Toast.makeText(this, "Please add some ingredients first", Toast.LENGTH_SHORT).show()
+            }
+        }
     }
 
     private fun analyzeImages(photoPaths: List<String>) {
@@ -153,7 +184,32 @@ class IdentifyIngredientsActivity : AppCompatActivity() {
         }
     }
 
+    private fun navigateToCamera() {
+        val intent = Intent(this, ScanCameraActivity::class.java)
+        startActivity(intent)
+        finish()
+    }
 
+    private fun navigateToRecipes() {
+        val intent = Intent(this, RecipeListActivity::class.java)
+        intent.putStringArrayListExtra("ingredients", ArrayList(ingredients))
+        startActivity(intent)
+    }
+
+    private fun addIngredient(ingredient: String) {
+        ingredients.add(ingredient)
+        adapter.notifyItemInserted(ingredients.size - 1)
+    }
+
+    private fun removeIngredient(position: Int) {
+        ingredients.removeAt(position)
+        adapter.notifyItemRemoved(position)
+    }
+
+    private fun updateIngredient(position: Int, newText: String) {
+        ingredients[position] = newText
+        adapter.notifyItemChanged(position)
+    }
 
     private fun updateIngredients(newIngredients: List<String>) {
         val oldSize = ingredients.size
@@ -164,21 +220,38 @@ class IdentifyIngredientsActivity : AppCompatActivity() {
         progressBar.visibility = View.GONE
     }
 
-    class IngredientsAdapter(private val ingredients: List<String>) :
-        RecyclerView.Adapter<IngredientsAdapter.ViewHolder>() {
+    class IngredientsAdapter(
+        private val ingredients: List<String>,
+        private val onDelete: (Int) -> Unit,
+        private val onEdit: (Int, String) -> Unit
+    ) : RecyclerView.Adapter<IngredientsAdapter.ViewHolder>() {
 
         class ViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-            val textView: TextView = view.findViewById(android.R.id.text1)
+            val editText: EditText = view.findViewById(R.id.ingredientEdit)
+            val deleteButton: ImageButton = view.findViewById(R.id.deleteButton)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
             val view = LayoutInflater.from(parent.context)
-                .inflate(android.R.layout.simple_list_item_1, parent, false)
+                .inflate(R.layout.item_ingredient, parent, false)
             return ViewHolder(view)
         }
 
         override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-            holder.textView.text = ingredients[position]
+            holder.editText.setText(ingredients[position])
+
+            holder.editText.setOnFocusChangeListener { _, hasFocus ->
+                if (!hasFocus) {
+                    val newText = holder.editText.text.toString().trim()
+                    if (newText.isNotEmpty() && newText != ingredients[position]) {
+                        onEdit(position, newText)
+                    }
+                }
+            }
+
+            holder.deleteButton.setOnClickListener {
+                onDelete(position)
+            }
         }
 
         override fun getItemCount() = ingredients.size

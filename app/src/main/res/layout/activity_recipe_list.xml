@@ -23,7 +23,6 @@
             android:background="@drawable/recipe_background"
             android:padding="10dp">
 
-            <!-- Back Button -->
             <ImageButton
                 android:id="@+id/backButton"
                 android:layout_width="55dp"
@@ -44,7 +43,6 @@
             android:orientation="horizontal"
             android:padding="8dp">
 
-            <!-- Menu Button -->
             <ImageButton
                 android:id="@+id/menuButton"
                 android:layout_width="62dp"
@@ -53,7 +51,6 @@
                 android:contentDescription="Menu"
                 android:src="@drawable/menu_icon" />
 
-            <!-- All Filters Button -->
             <Button
                 android:id="@+id/allFiltersButton"
                 android:layout_width="wrap_content"
@@ -64,7 +61,6 @@
                 android:text="All Filters"
                 android:textColor="#FFFFFF" />
 
-            <!-- See/Add Ingredients Button -->
             <Button
                 android:id="@+id/seeAddIngredientsButton"
                 android:layout_width="wrap_content"
@@ -76,7 +72,6 @@
 
     </LinearLayout>
 
-    <!-- Scrollable Recipe List -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recipeList"
         android:layout_width="0dp"

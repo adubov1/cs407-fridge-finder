@@ -14,4 +14,5 @@
     <string name="take_more_photos">Take More Photos</string>
     <string name="remove_image">Remove image</string>
     <string name="upload_photo">Upload Photos</string>
+    <string name="delete_ingredient">Delete ingredient</string>
 </resources>

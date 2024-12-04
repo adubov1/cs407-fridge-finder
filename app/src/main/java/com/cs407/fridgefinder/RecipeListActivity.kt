@@ -2,7 +2,10 @@ package com.cs407.fridgefinder
 
 import Recipe
 import RecipeAdapter
+import android.content.Intent
 import android.os.Bundle
+import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
@@ -18,7 +21,12 @@ import java.io.IOException
 class RecipeListActivity : AppCompatActivity() {
     private lateinit var recyclerView: RecyclerView
     private lateinit var adapter: RecipeAdapter
+    private lateinit var seeAddIngredientsButton: Button
+    private lateinit var allFiltersButton: Button
+    private lateinit var menuButton: ImageButton
+    private lateinit var backButton: ImageButton
     private val client = OkHttpClient()
+    private var currentIngredients: ArrayList<String> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,15 +40,37 @@ class RecipeListActivity : AppCompatActivity() {
         }
 
         recyclerView = findViewById(R.id.recipeList)
+        seeAddIngredientsButton = findViewById(R.id.seeAddIngredientsButton)
+        allFiltersButton = findViewById(R.id.allFiltersButton)
+        menuButton = findViewById(R.id.menuButton)
+        backButton = findViewById(R.id.backButton)
+
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = RecipeAdapter(emptyList())
         recyclerView.adapter = adapter
 
-        val ingredients = intent.getStringArrayListExtra("ingredients") ?: emptyList()
-        if (ingredients.isNotEmpty()) {
-            fetchRecipes(ingredients)
+        currentIngredients = intent.getStringArrayListExtra("ingredients") ?: ArrayList()
+
+        if (currentIngredients.isNotEmpty()) {
+            fetchRecipes(currentIngredients)
         } else {
             Toast.makeText(this, "No ingredients provided", Toast.LENGTH_SHORT).show()
+        }
+
+        seeAddIngredientsButton.setOnClickListener {
+            navigateToIngredients()
+        }
+
+        allFiltersButton.setOnClickListener {
+            Toast.makeText(this, "Filters coming soon", Toast.LENGTH_SHORT).show()
+        }
+
+        menuButton.setOnClickListener {
+            Toast.makeText(this, "Menu coming soon", Toast.LENGTH_SHORT).show()
+        }
+
+        backButton.setOnClickListener {
+            navigateToMain()
         }
     }
 
@@ -107,6 +137,23 @@ class RecipeListActivity : AppCompatActivity() {
             e.printStackTrace()
         }
         return recipes
+    }
+
+    private fun navigateToMain() {
+        val intent = Intent(this, MainActivity::class.java)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+        startActivity(intent)
+        finish()
+    }
+
+    private fun navigateToIngredients() {
+        val intent = Intent(this, IdentifyIngredientsActivity::class.java).apply {
+            putStringArrayListExtra("ingredients", currentIngredients)
+            putExtra("fromRecipeList", true)
+        }
+
+        startActivity(intent)
+        finish()
     }
 }
 
