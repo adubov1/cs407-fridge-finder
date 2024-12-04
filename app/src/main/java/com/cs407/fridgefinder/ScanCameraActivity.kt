@@ -199,7 +199,7 @@ class ScanCameraActivity : AppCompatActivity() {
             photosList.add(FridgePhoto(photoFile.absolutePath))
             photosLeft--
             updatePhotosLeftCounter()
-            Toast.makeText(this, "Photo uploaded: ${photoFile.absolutePath}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(this, "Photo uploaded", Toast.LENGTH_SHORT).show()
         } catch (e: Exception) {
             Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
         }
