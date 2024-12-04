@@ -1,9 +1,11 @@
 package com.cs407.fridgefinder
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.TextView
 import android.widget.Toast
@@ -27,15 +29,24 @@ class IdentifyIngredientsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ingredients)
 
+        val backButton = findViewById<ImageButton>(R.id.backButton)
         recyclerView = findViewById(R.id.ingredientsList)
         progressBar = findViewById(R.id.progressBar)
-
+        backButton.setOnClickListener {
+            navigateToCamera()
+        }
         recyclerView.layoutManager = LinearLayoutManager(this)
         adapter = IngredientsAdapter(ingredients)
         recyclerView.adapter = adapter
 
         val photoPaths = intent.getStringArrayListExtra("photoPaths") ?: emptyList()
         analyzeImages(photoPaths)
+    }
+
+    private fun navigateToCamera() {
+        val intent = Intent(this, ScanCameraActivity::class.java)
+        startActivity(intent)
+        finish()
     }
 
     private fun analyzeImages(photoPaths: List<String>) {
@@ -46,7 +57,7 @@ class IdentifyIngredientsActivity : AppCompatActivity() {
 
         progressBar.visibility = View.VISIBLE
 
-        val apiKey = "ao6MEaQ7.SWK7afeT6iMUITOP0QWR67TCfA9sxISy"
+        val apiKey = "Wx4pjijk.QTdhAGw3E6z2HBzVNywMdnkGBno8zeBa"
         val client = OkHttpClient()
         val combinedResults = mutableListOf<String>()
 
@@ -70,7 +81,6 @@ class IdentifyIngredientsActivity : AppCompatActivity() {
 
                     if (response.isSuccessful) {
                         val responseBody = response.body?.string()
-                        println("Response Body: $responseBody")
                         val result = parseAnalysisResponse(responseBody)
                         if (result != null) {
                             combinedResults.addAll(result)

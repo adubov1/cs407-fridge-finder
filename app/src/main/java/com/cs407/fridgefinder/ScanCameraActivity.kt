@@ -3,7 +3,9 @@ package com.cs407.fridgefinder
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
@@ -64,6 +66,8 @@ class ScanCameraActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_scan_camera)
+        val numPhotosLeft = findViewById<TextView>(R.id.numPhotosLeft)
+        numPhotosLeft.text = "Photos Left: $photosLeft"
 
         ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main)) { v, insets ->
             val systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars())
@@ -92,7 +96,7 @@ class ScanCameraActivity : AppCompatActivity() {
                 navigateToReview()
             }
         }
-
+        setupUploadButton()
         updatePhotosLeftCounter()
         cameraExecutor = Executors.newSingleThreadExecutor()
     }
@@ -161,6 +165,44 @@ class ScanCameraActivity : AppCompatActivity() {
                     Toast.LENGTH_SHORT).show()
             }
         }, ContextCompat.getMainExecutor(this))
+    }
+
+    private fun setupUploadButton() {
+        findViewById<ImageButton>(R.id.uploadButton).setOnClickListener {
+            uploadPhotoLauncher.launch("image/*")
+        }
+    }
+
+    private val uploadPhotoLauncher = registerForActivityResult(
+        ActivityResultContracts.GetContent()
+    ) { uri ->
+        if (uri != null) {
+            saveUploadedPhoto(uri)
+        } else {
+            Toast.makeText(this, "No photo selected", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    private fun saveUploadedPhoto(uri: Uri) {
+        val inputStream = contentResolver.openInputStream(uri)
+        val photoFile = File(
+            outputDirectory,
+            "uploaded_${System.currentTimeMillis()}.jpg"
+        )
+
+        try {
+            inputStream?.use { input ->
+                photoFile.outputStream().use { output ->
+                    input.copyTo(output)
+                }
+            }
+            photosList.add(FridgePhoto(photoFile.absolutePath))
+            photosLeft--
+            updatePhotosLeftCounter()
+            Toast.makeText(this, "Photo uploaded: ${photoFile.absolutePath}", Toast.LENGTH_SHORT).show()
+        } catch (e: Exception) {
+            Toast.makeText(this, "${e.message}", Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun navigateToReview() {

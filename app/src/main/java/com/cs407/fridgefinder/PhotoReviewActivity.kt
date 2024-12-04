@@ -36,7 +36,6 @@ class PhotoReviewActivity : AppCompatActivity() {
         recyclerView.adapter = adapter
 
         findViewById<Button>(R.id.finalizeButton).setOnClickListener {
-            println("test")
             if (photos.isNotEmpty()) {
                 println("Starting IdentifyIngredientsActivity with photos: $photos")
                 val intent = Intent(this, IdentifyIngredientsActivity::class.java)
