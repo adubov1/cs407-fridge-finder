@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "457507608400",
+    "project_id": "fridge-finder-aced1",
+    "storage_bucket": "fridge-finder-aced1.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:457507608400:android:0f6e4f45fb597717b6fe55",
+        "android_client_info": {
+          "package_name": "com.cs407.fridgefinder"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDoxoY2Zdahbv22zNIGqdTN_-9H8nSjReI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

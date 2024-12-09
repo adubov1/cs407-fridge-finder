@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import com.bumptech.glide.Glide
+import com.google.firebase.firestore.FirebaseFirestore
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import org.json.JSONObject
@@ -18,6 +19,7 @@ import org.json.JSONObject
 class RecipeDescriptionActivity : AppCompatActivity() {
     private val client = OkHttpClient()
     private var isSaved = false
+    private val firestore = FirebaseFirestore.getInstance()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,16 +52,28 @@ class RecipeDescriptionActivity : AppCompatActivity() {
         }
 
         val saveButton = findViewById<ImageButton>(R.id.saveButton)
+        if (recipeId != -1) {
+            checkIsSaved(recipeId) { saved ->
+                isSaved = saved
+                saveButton.setImageResource(
+                    if (isSaved) R.drawable.bookmark_filled_icon
+                    else R.drawable.bookmark_icon
+                )
+            }
+        }
+
         saveButton.setOnClickListener {
             isSaved = !isSaved
             saveButton.setImageResource(
                 if (isSaved) R.drawable.bookmark_filled_icon
                 else R.drawable.bookmark_icon
             )
-            Toast.makeText(this,
-                if (isSaved) "Recipe saved" else "Recipe removed from saved",
-                Toast.LENGTH_SHORT
-            ).show()
+
+            if (isSaved) {
+                saveRecipeToFirestore(recipeId, title, imageUrl, usedIngredients, missedIngredients)
+            } else {
+                removeRecipeFromFirestore(recipeId)
+            }
         }
 
         findViewById<TextView>(R.id.Text1).text = "Ingredients:"
@@ -104,5 +118,58 @@ class RecipeDescriptionActivity : AppCompatActivity() {
                 }
             }
         }.start()
+    }
+
+    private fun saveRecipeToFirestore(
+        id: Int,
+        title: String,
+        image: String?,
+        usedIngredients: List<String>,
+        missedIngredients: List<String>
+    ) {
+        val recipe = hashMapOf(
+            "id" to id,
+            "title" to title,
+            "image" to image,
+            "usedIngredients" to usedIngredients,
+            "missedIngredients" to missedIngredients
+        )
+        firestore.collection("recipe")
+            .document(id.toString())
+            .set(recipe)
+            .addOnSuccessListener {
+                Toast.makeText(this, "Recipe saved successfully", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e->
+                Toast.makeText(this, "Failed to save recipe", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun removeRecipeFromFirestore(id: Int) {
+        firestore.collection("recipe")
+            .document(id.toString())
+            .delete()
+            .addOnSuccessListener {
+                Toast.makeText(this, "Recipe removed from saved", Toast.LENGTH_SHORT).show()
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(this, "Failed to remove recipe", Toast.LENGTH_SHORT).show()
+            }
+    }
+
+    private fun checkIsSaved(id: Int, callback: (Boolean) -> Unit) {
+        firestore.collection("recipe")
+            .document(id.toString())
+            .get()
+            .addOnSuccessListener { document ->
+                if (document.exists()) {
+                    callback(true)
+                } else {
+                    callback(false)
+                }
+            }
+            .addOnFailureListener { e ->
+                callback(false)
+            }
     }
 }
