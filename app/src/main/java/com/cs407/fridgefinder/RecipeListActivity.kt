@@ -77,7 +77,7 @@ class RecipeListActivity : AppCompatActivity() {
     private fun fetchRecipes(ingredients: List<String>) {
         val apiKey = "37ae16adc4fa442fb2663292d5b710d0"
         val ingredientQuery = ingredients.joinToString(",")
-        val url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=$ingredientQuery&number=25&ranking=1&ignorePantry=true&apiKey=$apiKey"
+        val url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=$ingredientQuery&number=10&ranking=1&ignorePantry=true&apiKey=$apiKey"
 
         Thread {
             try {
