@@ -7,116 +7,122 @@
     android:layout_height="match_parent"
     tools:context=".RecipeDescriptionActivity">
 
-        <LinearLayout
+    <LinearLayout
+        android:id="@+id/linearLayout2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:background="@color/primary_green"
+            android:paddingLeft="16dp"
+            android:paddingTop="8dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp">
 
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#CDCEFF"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"
-                android:paddingTop="8dp"
-                android:paddingBottom="8dp">
+            <ImageButton
+                android:id="@+id/backButton"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_alignParentStart="true"
+                android:layout_marginBottom="200sp"
+                android:background="@drawable/back_circle"
+                android:contentDescription="Back"
+                android:src="@drawable/back_arrow" />
 
-                <ImageButton
-                    android:id="@+id/backButton"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:src="@drawable/back_arrow"
-                    android:background="@drawable/back_circle"
-                    android:contentDescription="Back"
-                    android:layout_marginBottom="200sp"
-                    android:layout_alignParentStart="true" />
-
-                <TextView
-                    android:id="@+id/titleTextView"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Title?"
-                    android:textSize="36sp"
-                    android:textStyle="bold"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true" />
-
-                <ImageButton
-                    android:id="@+id/saveButton"
-                    android:layout_width="55dp"
-                    android:layout_height="55dp"
-                    android:layout_alignParentEnd="true"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="Bookmark"
-                    android:src="@drawable/bookmark_icon" />
-
-            </RelativeLayout>
-
-            <!-- Recipe Image and Title Section -->
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="210dp"
-                android:orientation="horizontal"
-                android:paddingLeft="16dp"
-                android:paddingTop="16dp"
-                android:background="#F7DDFD">
-
-                <ImageView
-                    android:id="@+id/recipeImage"
-                    android:layout_width="180dp"
-                    android:layout_height="180dp"
-                    android:src="@drawable/temp_photo"
-                    android:scaleType="centerCrop" />
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical"
-                    android:paddingStart="16dp">
-
-                    <TextView
-                        android:id="@+id/recipeTitle"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Recipe"
-                        android:textSize="24sp"
-                        android:textStyle="bold" />
-
-                    <TextView
-                        android:id="@+id/supportingText"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:paddingTop="4dp"
-                        android:text="supporting text"
-                        android:textColor="#666666" />
-
-                </LinearLayout>
-            </LinearLayout>
-
-            <!-- Published Date and Description Section -->
             <TextView
-                android:id="@+id/Text1"
+                android:id="@+id/titleTextView"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Text1"
-                android:textColor="#666666"
-                android:paddingTop="16dp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"/>
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:text="Title?"
+                android:fontFamily="@font/montserrat_semibold"
+                android:textSize="36sp"
+                android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/description"
-                android:layout_width="match_parent"
+            <ImageButton
+                android:id="@+id/saveButton"
+                android:layout_width="55dp"
+                android:layout_height="55dp"
+                android:layout_alignParentEnd="true"
+                android:background="@android:color/transparent"
+                android:contentDescription="Bookmark"
+                android:src="@drawable/bookmark_icon" />
+
+        </RelativeLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="210dp"
+            android:background="@color/light_green"
+            android:orientation="horizontal"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp">
+
+            <ImageView
+                android:id="@+id/recipeImage"
+                android:layout_width="180dp"
+                android:layout_height="180dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/temp_photo" />
+
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:text="Description"
-                android:textSize="16sp"
-                android:paddingBottom="8dp"
-                android:paddingLeft="16dp"
-                android:paddingRight="16dp"/>
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:paddingStart="16dp">
 
+                <TextView
+                    android:id="@+id/recipeTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Recipe"
+                    android:textSize="24sp"
+                    android:fontFamily="@font/montserrat_semibold"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/supportingText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingTop="4dp"
+                    android:text="supporting text"
+                    android:fontFamily="@font/montserrat_regular"
+                    android:textColor="#666666" />
+
+            </LinearLayout>
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/Text1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingTop="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp"
+            android:text="Text1"
+            android:textColor="#666666" />
+
+        <TextView
+            android:id="@+id/description"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="16dp"
+            android:paddingRight="16dp"
+            android:paddingBottom="8dp"
+            android:text="Description"
+            android:fontFamily="@font/montserrat_regular"
+            android:textSize="16sp" />
+
+    </LinearLayout>
     <!--</ScrollView> -->
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -4,7 +4,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white">
 
     <TextView
         android:id="@+id/titleText"
@@ -12,7 +13,8 @@
         android:layout_height="wrap_content"
         android:text="@string/review_photos"
         android:textSize="24sp"
-        android:textStyle="bold"
+        android:textColor="@color/primary_green"
+        android:fontFamily="@font/montserrat_semibold"
         android:layout_marginTop="16dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -30,12 +32,14 @@
 
     <LinearLayout
         android:id="@+id/buttonContainer"
-        android:layout_width="match_parent"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:padding="16dp"
         android:gravity="center"
-        app:layout_constraintBottom_toBottomOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <Button
             android:id="@+id/takeMoreButton"
@@ -43,9 +47,11 @@
             android:layout_height="wrap_content"
             android:text="@string/take_more_photos"
             android:textColor="@color/white"
-            android:backgroundTint="@color/design_default_color_primary"
+            android:backgroundTint="@color/primary_green"
+            android:fontFamily="@font/montserrat_regular"
             android:layout_marginEnd="8dp"
-            tools:ignore="ButtonStyle" />
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp" />
 
         <Button
             android:id="@+id/finalizeButton"
@@ -53,9 +59,11 @@
             android:layout_height="wrap_content"
             android:text="@string/analyze_photos"
             android:textColor="@color/white"
-            android:backgroundTint="@color/design_default_color_primary_dark"
+            android:backgroundTint="@color/primary_green"
+            android:fontFamily="@font/montserrat_regular"
             android:layout_marginStart="8dp"
-            tools:ignore="ButtonStyle" />
+            android:paddingHorizontal="16dp"
+            android:paddingVertical="8dp" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

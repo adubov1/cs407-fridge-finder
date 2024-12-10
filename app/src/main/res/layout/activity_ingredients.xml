@@ -7,12 +7,14 @@
     android:padding="16dp"
     android:background="#FFFFFF">
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center_vertical"
         android:paddingBottom="16dp">
+
 
         <ImageButton
             android:id="@+id/backButton"
@@ -24,15 +26,18 @@
             android:layout_marginEnd="8dp"
             app:tint="#000000" />
 
+
         <TextView
             android:id="@+id/ingredientsTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Identified Ingredients"
+            android:fontFamily="@font/montserrat_semibold"
             android:textSize="20sp"
             android:textStyle="bold"
             android:textColor="#000000" />
     </LinearLayout>
+
 
     <ProgressBar
         android:id="@+id/progressBar"
@@ -41,27 +46,34 @@
         android:layout_gravity="center"
         android:visibility="gone" />
 
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:layout_marginBottom="8dp">
 
+
         <EditText
             android:id="@+id/addIngredientEdit"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="48dp"
             android:layout_weight="1"
             android:hint="Add new ingredient"
+            android:fontFamily="@font/montserrat_regular"
             android:inputType="text"
             android:imeOptions="actionDone"/>
+
 
         <Button
             android:id="@+id/addIngredientButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:backgroundTint="@color/primary_green"
+            android:fontFamily="@font/montserrat_regular"
             android:text="Add"/>
     </LinearLayout>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ingredientsList"
@@ -70,10 +82,13 @@
         android:layout_weight="1"
         android:scrollbars="vertical" />
 
+
     <Button
         android:id="@+id/findRecipesButton"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Find Recipes"
+        android:backgroundTint="@color/primary_green"
+        android:fontFamily="@font/montserrat_regular"
         android:layout_marginTop="16dp"/>
 </LinearLayout>
