@@ -3,7 +3,9 @@ package com.cs407.fridgefinder
 import Recipe
 import RecipeAdapter
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
@@ -52,7 +54,7 @@ class RecipeListActivity : AppCompatActivity() {
         currentIngredients = intent.getStringArrayListExtra("ingredients") ?: ArrayList()
 
         if (currentIngredients.isNotEmpty()) {
-            fetchRecipes(currentIngredients)
+            fetchRecipesWithRetry(currentIngredients)
         } else {
             Toast.makeText(this, "No ingredients provided", Toast.LENGTH_SHORT).show()
         }
@@ -74,38 +76,43 @@ class RecipeListActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchRecipes(ingredients: List<String>) {
+    private fun fetchRecipesWithRetry(ingredients: List<String>, retries: Int = 3) {
         val apiKey = "37ae16adc4fa442fb2663292d5b710d0"
-        val ingredientQuery = ingredients.joinToString(",")
+        val ingredientQuery = ingredients.joinToString(",") { Uri.encode(it) }
         val url = "https://api.spoonacular.com/recipes/findByIngredients?ingredients=$ingredientQuery&number=10&ranking=1&ignorePantry=true&apiKey=$apiKey"
 
+        var attempts = 0
         Thread {
-            try {
-                val request = Request.Builder().url(url).build()
-                val response = client.newCall(request).execute()
+            while (attempts < retries) {
+                try {
+                    val request = Request.Builder().url(url).build()
+                    val response = client.newCall(request).execute()
 
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    val recipes = parseRecipes(responseBody)
-                    runOnUiThread {
-                        if (recipes.isNotEmpty()) {
-                            adapter.updateRecipes(recipes)
-                        } else {
-                            Toast.makeText(this, "No recipes found", Toast.LENGTH_SHORT).show()
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+                        val recipes = parseRecipes(responseBody)
+                        runOnUiThread {
+                            if (recipes.isNotEmpty()) {
+                                adapter.updateRecipes(recipes)
+                            } else {
+                                Toast.makeText(this, "No recipes found", Toast.LENGTH_SHORT).show()
+                            }
                         }
+                        return@Thread
+                    } else {
+                        attempts++
                     }
-                } else {
-                    runOnUiThread {
-                        Toast.makeText(this, "Failed to fetch recipes: ${response.message}", Toast.LENGTH_SHORT).show()
-                    }
+                } catch (e: IOException) {
+                    attempts++
+                    Log.e("RecipeListActivity", "Network error on attempt $attempts: ${e.message}")
                 }
-            } catch (e: IOException) {
-                runOnUiThread {
-                    Toast.makeText(this, "Network error: ${e.message}", Toast.LENGTH_SHORT).show()
-                }
+            }
+            runOnUiThread {
+                Toast.makeText(this, "Failed to fetch recipes after $retries attempts", Toast.LENGTH_LONG).show()
             }
         }.start()
     }
+
 
     private fun parseRecipes(responseBody: String?): List<Recipe> {
         if (responseBody.isNullOrEmpty()) return emptyList()

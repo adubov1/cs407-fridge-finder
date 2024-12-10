@@ -1,6 +1,7 @@
 package com.cs407.fridgefinder
 
 import android.os.Bundle
+import android.text.Html
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ImageView
@@ -90,31 +91,47 @@ class RecipeDescriptionActivity : AppCompatActivity() {
         }
     }
 
-    private fun fetchRecipeDetails(recipeId: Int) {
+    private fun fetchRecipeDetails(recipeId: Int, retries: Int = 3) {
         Thread {
-            try {
-                val apiKey = "37ae16adc4fa442fb2663292d5b710d0"
-                val request = Request.Builder()
-                    .url("https://api.spoonacular.com/recipes/$recipeId/information?apiKey=$apiKey")
-                    .build()
+            var attempts = 0
+            while (attempts < retries) {
+                try {
+                    val apiKey = "37ae16adc4fa442fb2663292d5b710d0"
+                    val request = Request.Builder()
+                        .url("https://api.spoonacular.com/recipes/$recipeId/information?apiKey=$apiKey")
+                        .build()
 
-                val response = client.newCall(request).execute()
+                    val response = client.newCall(request).execute()
 
-                if (response.isSuccessful) {
-                    val responseBody = response.body?.string()
-                    val recipeInfo = JSONObject(responseBody)
+                    if (response.isSuccessful) {
+                        val responseBody = response.body?.string()
+                        val recipeInfo = JSONObject(responseBody)
 
-                    runOnUiThread {
-                        findViewById<TextView>(R.id.description).text = recipeInfo.getString("instructions")
+                        runOnUiThread {
+                            val instructionsHtml = recipeInfo.getString("instructions")
+                            findViewById<TextView>(R.id.description).text = Html.fromHtml(instructionsHtml, Html.FROM_HTML_MODE_COMPACT)
+
+                        }
+                        return@Thread
+                    } else {
+                        attempts++
+                        if (attempts == retries) {
+                            runOnUiThread {
+                                Toast.makeText(
+                                    this,
+                                    "Failed to fetch recipe details: ${response.message}",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+                        }
                     }
-                } else {
-                    runOnUiThread {
-                        Toast.makeText(this, "Failed to fetch recipe details", Toast.LENGTH_SHORT).show()
+                } catch (e: Exception) {
+                    attempts++
+                    if (attempts == retries) {
+                        runOnUiThread {
+                            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
+                        }
                     }
-                }
-            } catch (e: Exception) {
-                runOnUiThread {
-                    Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_SHORT).show()
                 }
             }
         }.start()
